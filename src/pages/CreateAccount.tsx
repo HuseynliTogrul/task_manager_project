@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 export function CreateAccount(): React.ReactElement {
   const [newUserName, setNewUserName] = useState("");
-  const [newUserEmail, setNewEmail] = useState("");
+  const [newUserFullName, setNewFullName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
 
@@ -21,7 +21,7 @@ export function CreateAccount(): React.ReactElement {
   const handleNewAccount = () => {
     if (
       newUserName.trim() === "" ||
-      newUserEmail.trim() === "" ||
+      newUserFullName.trim() === "" ||
       newPassword.trim() === ""
     ) {
       message.error("It cannot be empty!");
@@ -31,7 +31,7 @@ export function CreateAccount(): React.ReactElement {
     if (
       newUserName.length < 4 &&
       newPassword.length < 4 &&
-      newUserEmail.length < 4
+      newUserFullName.length < 4
     ) {
       message.error("Length must be at least 4 characters long!");
       return;
@@ -47,11 +47,11 @@ export function CreateAccount(): React.ReactElement {
     if (users[newUserName.trim()]) {
       message.error("This username already exists!");
       setNewUserName("");
-      setNewEmail("");
+      setNewFullName("");
       setNewPassword("");
     } else {
       users[newUserName.trim()] = {
-        email: newUserEmail.trim(),
+        fullName: newUserFullName.trim(),
         password: newPassword.trim()
       };
       localStorage.setItem("users", JSON.stringify(users));
@@ -79,15 +79,15 @@ export function CreateAccount(): React.ReactElement {
             onChange={(e) => setNewUserName(e.target.value)}
           />
         </div>
-        <div className="inputEmail">
-          <p>Email</p>
+        <div className="inputFullName">
+          <p>FullName</p>
           <Input
             className="mb-3 mt-2 p-[15px] rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
             size="large"
-            placeholder="Email"
+            placeholder="Fullname"
             prefix={<MailOutlined />}
-            value={newUserEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
+            value={newUserFullName}
+            onChange={(e) => setNewFullName(e.target.value)}
           />
         </div>
         <div className="inputPasw">
