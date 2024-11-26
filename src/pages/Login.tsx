@@ -17,8 +17,11 @@ export function Login(): React.ReactElement {
   const handleLogin = () => {
     const users = JSON.parse(localStorage.getItem("users") || "{}");
 
-    if (users[userName] && users[userName].password === password) {
-      localStorage.setItem("currentUser", userName);
+    if (
+      users[userName.trim()] &&
+      users[userName.trim()].password === password.trim()
+    ) {
+      localStorage.setItem("currentUser", userName.trim());
       message.success("Login successful!");
       navigate("/");
     } else {

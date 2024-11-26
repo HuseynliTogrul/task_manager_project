@@ -14,24 +14,46 @@ export function CreateAccount(): React.ReactElement {
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
 
   const navigate = useNavigate();
 
   const handleNewAccount = () => {
-    if (newUserName === "" || newUserEmail === "" || newPassword === "") {
+    if (
+      newUserName.trim() === "" ||
+      newUserEmail.trim() === "" ||
+      newPassword.trim() === ""
+    ) {
       message.error("It cannot be empty!");
+      return;
+    }
+
+    if (
+      newUserName.length < 4 &&
+      newPassword.length < 4 &&
+      newUserEmail.length < 4
+    ) {
+      message.error("Length must be at least 4 characters long!");
+      return;
+    }
+
+    if (newPassword !== repeatPassword) {
+      message.error("The passwords are not the same!");
       return;
     }
 
     const users = JSON.parse(localStorage.getItem("users") || "{}");
 
-    if (users[newUserName]) {
+    if (users[newUserName.trim()]) {
       message.error("This username already exists!");
       setNewUserName("");
       setNewEmail("");
       setNewPassword("");
     } else {
-      users[newUserName] = { email: newUserEmail, password: newPassword };
+      users[newUserName.trim()] = {
+        email: newUserEmail.trim(),
+        password: newPassword.trim()
+      };
       localStorage.setItem("users", JSON.stringify(users));
       message.success("Account created successfully!");
       navigate("/login");
@@ -71,7 +93,7 @@ export function CreateAccount(): React.ReactElement {
         <div className="inputPasw">
           <p>Password</p>
           <Input.Password
-            className="p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
+            className="mb-3 p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
             placeholder="Password"
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
@@ -79,6 +101,19 @@ export function CreateAccount(): React.ReactElement {
             prefix={<LockOutlined />}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </div>
+        <div className="inputRepeatPasw">
+          <p>Repeat Password</p>
+          <Input.Password
+            className="p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
+            placeholder="Repeat Password"
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+            }
+            prefix={<LockOutlined />}
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
           />
         </div>
         <Button
