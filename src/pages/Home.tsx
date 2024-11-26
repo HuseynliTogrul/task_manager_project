@@ -3,7 +3,11 @@ export function Home(): React.ReactElement {
 
   return (
     <div className="p-5 text-center">
-      <h1>Welcome {currentUser}!</h1>
+      {currentUser ? (
+        <h1>Welcome {currentUser}!</h1>
+      ) : (
+        <h1>Home</h1>
+      )}
     </div>
   );
 }
