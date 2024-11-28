@@ -1,63 +1,19 @@
-import {
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  UserOutlined,
-  LockOutlined,
-  MailOutlined
-} from "@ant-design/icons";
-
-import { Button, Input, message } from "antd";
-import { useState } from "react";
+import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
+import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
+import { handleNewAccount } from "../services/handleNewAccount";
 
 export function CreateAccount(): React.ReactElement {
-  const [newUserName, setNewUserName] = useState("");
-  const [newUserFullName, setNewFullName] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const handleNewAccount = () => {
-    if (
-      newUserName.trim() === "" ||
-      newUserFullName.trim() === "" ||
-      newPassword.trim() === ""
-    ) {
-      message.error("It cannot be empty!");
-      return;
-    }
-
-    if (
-      newUserName.length < 4 &&
-      newPassword.length < 4 &&
-      newUserFullName.length < 4
-    ) {
-      message.error("Length must be at least 4 characters long!");
-      return;
-    }
-
-    if (newPassword !== repeatPassword) {
-      message.error("The passwords are not the same!");
-      return;
-    }
-
-    const users = JSON.parse(localStorage.getItem("users") || "{}");
-
-    if (users[newUserName.trim()]) {
-      message.error("This username already exists!");
-      setNewUserName("");
-      setNewFullName("");
-      setNewPassword("");
-    } else {
-      users[newUserName.trim()] = {
-        fullName: newUserFullName.trim(),
-        password: newPassword.trim()
-      };
-      localStorage.setItem("users", JSON.stringify(users));
-      message.success("Account created successfully!");
-      navigate("/login");
-    }
+  const onFinish = (values: {
+    userName: string;
+    userFullName: string;
+    password: string;
+    repeatPassword: string;
+  }) => {
+    handleNewAccount(values, navigate, form);
   };
 
   return (
@@ -69,60 +25,90 @@ export function CreateAccount(): React.ReactElement {
         </div>
         <h1 className="text-center text-3xl m-5">Create Account</h1>
         <div className="inputUser">
-          <p>Username</p>
-          <Input
-            className="mb-3 mt-2 p-[15px] rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            size="large"
-            placeholder="User Name"
-            prefix={<UserOutlined />}
-            value={newUserName}
-            onChange={(e) => setNewUserName(e.target.value)}
-          />
+          <Form
+            form={form}
+            onFinish={onFinish}
+            autoComplete="off"
+            layout="vertical"
+          >
+            <Form.Item
+              label="Username"
+              className="mb-3 mt-2"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Username!"
+                }
+              ]}
+            >
+              <Input
+                className="p-[15px]"
+                prefix={<UserOutlined />}
+                placeholder="Username"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Fullname"
+              className="mb-3 mt-2"
+              name="fullname"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your FullName!"
+                }
+              ]}
+            >
+              <Input
+                className="p-[15px]"
+                prefix={<MailOutlined />}
+                placeholder="FullName"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Password"
+              className="mb-3 mt-2"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Password!"
+                },
+                { min: 5, message: "Password must be minimum 5 characters!" }
+              ]}
+            >
+              <Input.Password
+                className="p-[15px]"
+                prefix={<LockOutlined />}
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Repeat Password"
+              name="repeatPassword"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Repeat Password!"
+                },
+                { min: 5, message: "Password must be minimum 5 characters!" }
+              ]}
+            >
+              <Input.Password
+                className="p-[15px]"
+                prefix={<LockOutlined />}
+                placeholder="Repeat Password"
+              />
+            </Form.Item>
+            <Button
+              type="primary"
+              className="w-full text-[18px] bg-[#26a69a] py-[20px] hover:!bg-[#1a8e82]"
+              htmlType="submit"
+            >
+              Sign up
+            </Button>
+          </Form>
         </div>
-        <div className="inputFullName">
-          <p>FullName</p>
-          <Input
-            className="mb-3 mt-2 p-[15px] rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            size="large"
-            placeholder="Fullname"
-            prefix={<MailOutlined />}
-            value={newUserFullName}
-            onChange={(e) => setNewFullName(e.target.value)}
-          />
-        </div>
-        <div className="inputPasw">
-          <p>Password</p>
-          <Input.Password
-            className="mb-3 p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            placeholder="Password"
-            iconRender={(visible) =>
-              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-            }
-            prefix={<LockOutlined />}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <div className="inputRepeatPasw">
-          <p>Repeat Password</p>
-          <Input.Password
-            className="p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            placeholder="Repeat Password"
-            iconRender={(visible) =>
-              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-            }
-            prefix={<LockOutlined />}
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
-          />
-        </div>
-        <Button
-          type="primary"
-          className="w-full text-[18px] bg-[#26a69a] py-[20px] hover:!bg-[#1a8e82] mt-[25px]"
-          onClick={handleNewAccount}
-        >
-          Sign in
-        </Button>
       </div>
     </div>
   );
