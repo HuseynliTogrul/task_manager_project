@@ -1,41 +1,18 @@
-import {
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  UserOutlined,
-  LockOutlined,
-  MailOutlined
-} from "@ant-design/icons";
-
-import { Button, Input, message } from "antd";
-import { useState } from "react";
+import { Button, Form, Input } from "antd";
+import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { AccountValues } from "../types/types";
+import { signUp } from "../services/auth";
 
 export function CreateAccount(): React.ReactElement {
-  const [newUserName, setNewUserName] = useState("");
-  const [newUserEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const handleNewAccount = () => {
-    if (newUserName === "" || newUserEmail === "" || newPassword === "") {
-      message.error("It cannot be empty!");
-      return;
-    }
-
-    const users = JSON.parse(localStorage.getItem("users") || "{}");
-
-    if (users[newUserName]) {
-      message.error("This username already exists!");
-      setNewUserName("");
-      setNewEmail("");
-      setNewPassword("");
-    } else {
-      users[newUserName] = { email: newUserEmail, password: newPassword };
-      localStorage.setItem("users", JSON.stringify(users));
-      message.success("Account created successfully!");
-      navigate("/login");
-    }
+  const onFinish = (values: AccountValues) => {
+    const normalizedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [key, value.trim()])
+    ) as AccountValues;
+    signUp({ values: normalizedValues, navigate, form });
   };
 
   return (
@@ -47,47 +24,103 @@ export function CreateAccount(): React.ReactElement {
         </div>
         <h1 className="text-center text-3xl m-5">Create Account</h1>
         <div className="inputUser">
-          <p>Username</p>
-          <Input
-            className="mb-3 mt-2 p-[15px] rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            size="large"
-            placeholder="User Name"
-            prefix={<UserOutlined />}
-            value={newUserName}
-            onChange={(e) => setNewUserName(e.target.value)}
-          />
+          <Form
+            form={form}
+            onFinish={onFinish}
+            autoComplete="off"
+            layout="vertical"
+          >
+            <Form.Item
+              label="Username"
+              className="mb-3 mt-2"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Username!"
+                }
+              ]}
+            >
+              <Input
+                className="p-[15px]"
+                prefix={<UserOutlined />}
+                placeholder="Username"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Fullname"
+              className="mb-3 mt-2"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Fullname!"
+                }
+              ]}
+            >
+              <Input
+                className="p-[15px]"
+                prefix={<IdcardOutlined />}
+                placeholder="Fullname"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Password"
+              className="mb-3 mt-2"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Password!"
+                },
+                { min: 5, message: "Password must be minimum 5 characters!" }
+              ]}
+            >
+              <Input.Password
+                className="p-[15px]"
+                prefix={<LockOutlined />}
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Repeat Password"
+              name="repeatPassword"
+              dependencies={["password"]}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Repeat Password!"
+                },
+                { min: 5, message: "Password must be minimum 5 characters!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "The new password that you entered do not match!"
+                      )
+                    );
+                  }
+                })
+              ]}
+            >
+              <Input.Password
+                className="p-[15px]"
+                prefix={<LockOutlined />}
+                placeholder="Repeat Password"
+              />
+            </Form.Item>
+            <Button
+              type="primary"
+              className="w-full text-[18px] bg-[#26a69a] py-[20px] hover:!bg-[#1a8e82]"
+              htmlType="submit"
+            >
+              Sign up
+            </Button>
+          </Form>
         </div>
-        <div className="inputEmail">
-          <p>Email</p>
-          <Input
-            className="mb-3 mt-2 p-[15px] rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            size="large"
-            placeholder="Email"
-            prefix={<MailOutlined />}
-            value={newUserEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-        </div>
-        <div className="inputPasw">
-          <p>Password</p>
-          <Input.Password
-            className="p-[15px] mt-1 rounded shadow-[rgba(0,0,0,0.35)_0px_5px_15px]"
-            placeholder="Password"
-            iconRender={(visible) =>
-              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-            }
-            prefix={<LockOutlined />}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <Button
-          type="primary"
-          className="w-full text-[18px] bg-[#26a69a] py-[20px] hover:!bg-[#1a8e82] mt-[25px]"
-          onClick={handleNewAccount}
-        >
-          Sign in
-        </Button>
       </div>
     </div>
   );
