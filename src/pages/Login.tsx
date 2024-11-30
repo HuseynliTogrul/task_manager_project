@@ -1,26 +1,15 @@
+import React from "react";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Input, Button, Form } from "antd";
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { handleLogin } from "../services/handleLogin";
+import { login } from "../services/auth";
 
 export function Login(): React.ReactElement {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  // const [submittable, setSubmittable] = React.useState(false);
-  // const values = Form.useWatch([], form);
-
-  // React.useEffect(() => {
-  //   form
-  //     .validateFields({
-  //       validateOnly: true
-  //     })
-  //     .then(() => setSubmittable(true))
-  //     .catch(() => setSubmittable(false));
-  // }, [form, values]);
 
   const onFinish = (values: { username: string; password: string }) => {
-    handleLogin(values, navigate, form);
+    login(values, navigate, form);
   };
 
   return (
@@ -75,7 +64,6 @@ export function Login(): React.ReactElement {
               />
             </Form.Item>
             <Button
-              // disabled={!submittable}
               type="primary"
               className="w-full text-[18px] bg-[#26a69a] py-[20px] hover:!bg-[#1a8e82] mt-[25px]"
               htmlType="submit"

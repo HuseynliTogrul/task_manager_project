@@ -1,19 +1,18 @@
 import { Button, Form, Input } from "antd";
+import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
-import { handleNewAccount } from "../services/handleNewAccount";
+import { AccountValues } from "../types/types";
+import { signUp } from "../services/auth";
 
 export function CreateAccount(): React.ReactElement {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const onFinish = (values: {
-    userName: string;
-    userFullName: string;
-    password: string;
-    repeatPassword: string;
-  }) => {
-    handleNewAccount(values, navigate, form);
+  const onFinish = (values: AccountValues) => {
+    const normalizedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [key, value.trim()])
+    ) as AccountValues;
+    signUp({ values: normalizedValues, navigate, form });
   };
 
   return (
@@ -51,18 +50,18 @@ export function CreateAccount(): React.ReactElement {
             <Form.Item
               label="Fullname"
               className="mb-3 mt-2"
-              name="fullname"
+              name="name"
               rules={[
                 {
                   required: true,
-                  message: "Please input your FullName!"
+                  message: "Please input your Fullname!"
                 }
               ]}
             >
               <Input
                 className="p-[15px]"
-                prefix={<MailOutlined />}
-                placeholder="FullName"
+                prefix={<IdcardOutlined />}
+                placeholder="Fullname"
               />
             </Form.Item>
             <Form.Item
@@ -86,12 +85,25 @@ export function CreateAccount(): React.ReactElement {
             <Form.Item
               label="Repeat Password"
               name="repeatPassword"
+              dependencies={["password"]}
               rules={[
                 {
                   required: true,
                   message: "Please input your Repeat Password!"
                 },
-                { min: 5, message: "Password must be minimum 5 characters!" }
+                { min: 5, message: "Password must be minimum 5 characters!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "The new password that you entered do not match!"
+                      )
+                    );
+                  }
+                })
               ]}
             >
               <Input.Password
