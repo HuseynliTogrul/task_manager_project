@@ -1,19 +1,31 @@
 import React from "react";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Input, Button, Form } from "antd";
+import { Input, Button, Form, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/auth";
+import { login } from "../services";
+import { LoginValues } from "../types";
 
 export function Login(): React.ReactElement {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const onFinish = (values: { username: string; password: string }) => {
-    login(values, navigate, form);
+  const onFinish = async (values: LoginValues) => {
+    const normalizedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [key, value.trim()])
+    ) as LoginValues;
+
+    try {
+      await login(normalizedValues);
+      form.resetFields();
+      navigate("/");
+      message.success("Login successful!");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="w-[1200px] max-xl:w-full max-sm:px-5 max-sm:mt-6 max-sm:h-full h-[87vh] my-0 mx-auto flex justify-center items-center">
+    <div className="w-[1200px] max-xl:w-full max-sm:px-5 max-sm:mt-6 max-sm:h-full h-[87vh] mt-[90px] mb-0 mx-auto flex justify-center items-center">
       <div className="w-[400px] max-sm:w-full bg-[rgba(255,255,255,0.13)] max-sm:bg-white max-sm:pb-10 shadow-[rgba(14,30,37,0.12)_0px_2px_4px_0px,rgba(14,30,37,0.32)_0px_2px_16px_0px] rounded-xl pt-[15px] pb-[50px] px-[30px] relative">
         <div className="max-sm:hidden">
           <div className="w-[150px] h-[150px] absolute top-[-75px] left-[-75px] rounded-full bg-[linear-gradient(#5c6bc0,#7986cb)] z-[-1]"></div>

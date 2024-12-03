@@ -1,56 +1,41 @@
+import { LoginValues, AccountValues } from "./../types";
 import axios, { AxiosError } from "axios";
-import { FormInstance, message } from "antd";
-import { NavigateFunction } from "react-router-dom";
-import { HandleNewAccountParams } from "../types/types";
+import { message } from "antd";
+import { AccountProps, LoginProps } from "../types/api";
 
-export async function login(
-  values: {
-    username: string;
-    password: string;
-  },
-  navigate: NavigateFunction,
-  form: FormInstance
-) {
+export async function login(values: LoginValues): Promise<LoginProps> {
   try {
     const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/login",
-      {
-        username: values.username.trim(),
-        password: values.password.trim()
-      }
+      values
     );
     const data = res.data;
-    localStorage.setItem("currentUser", JSON.stringify(data.name));
-    message.success("Login successful!");
-    navigate("/");
+    localStorage.setItem("currentUser", JSON.stringify(data.token));
+    return data;
   } catch (e) {
     if (e instanceof AxiosError) {
       const error = e.response?.data?.message;
-      message.error(error || "Wrong username or password!");
+      message.error(error);
     } else {
       message.error("An unexpected error occurred.");
     }
+    throw new Error("Wrong username or password!");
   }
-  form.resetFields();
 }
 
-export async function signUp({
-  values,
-  navigate,
-  form
-}: HandleNewAccountParams) {
+export async function signUp(values: AccountValues): Promise<AccountProps> {
   try {
-    await axios.post(
+    const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/users",
       values
     );
-    message.success("Account created successfully!");
-    navigate("/login");
-    form.resetFields();
+    const data = res.data;
+    return data;
   } catch (e) {
     if (e instanceof AxiosError) {
       const error = e.response?.data.message;
       message.error(error);
     }
+    throw new Error("Account creation failed");
   }
 }

@@ -11,7 +11,7 @@ export function Header() {
   };
 
   return (
-    <div className="flex justify-between items-center px-10 py-3.5 shadow-[rgba(50,50,93,0.25)_0px_13px_27px_-5px,rgba(0,0,0,0.3)_0px_8px_16px_-8px]">
+    <div className="fixed top-0 left-0 w-full z-10 flex justify-between items-center bg-[aliceblue] px-10 py-3.5 shadow-[rgba(50,50,93,0.25)_0px_13px_27px_-5px,rgba(0,0,0,0.3)_0px_8px_16px_-8px]">
       <Link to="/">
         <img
           src={Logo}
