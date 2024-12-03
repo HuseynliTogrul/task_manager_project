@@ -1,16 +1,17 @@
-import { LoginValues, AccountValues } from "./../types/auth";
+import { LoginValues, AccountValues } from "./../types";
 import axios, { AxiosError } from "axios";
 import { message } from "antd";
+import { AccountProps, LoginProps } from "../types/api";
 
-export async function login(values: LoginValues): Promise<void> {
+export async function login(values: LoginValues): Promise<LoginProps> {
   try {
     const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/login",
       values
     );
     const data = res.data;
-    localStorage.setItem("currentUser", JSON.stringify(data.name));
-    message.success("Login successful!");
+    localStorage.setItem("currentUser", JSON.stringify(data.token));
+    return data;
   } catch (e) {
     if (e instanceof AxiosError) {
       const error = e.response?.data?.message;
@@ -22,13 +23,14 @@ export async function login(values: LoginValues): Promise<void> {
   }
 }
 
-export async function signUp(values: AccountValues): Promise<void> {
+export async function signUp(values: AccountValues): Promise<AccountProps> {
   try {
-    await axios.post(
+    const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/users",
       values
     );
-    message.success("Account created successfully!");
+    const data = res.data;
+    return data;
   } catch (e) {
     if (e instanceof AxiosError) {
       const error = e.response?.data.message;

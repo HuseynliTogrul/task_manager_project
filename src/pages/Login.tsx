@@ -1,6 +1,6 @@
 import React from "react";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Input, Button, Form } from "antd";
+import { Input, Button, Form, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../services";
 import { LoginValues } from "../types";
@@ -18,6 +18,7 @@ export function Login(): React.ReactElement {
       await login(normalizedValues);
       form.resetFields();
       navigate("/");
+      message.success("Login successful!");
     } catch (error) {
       console.log(error);
     }

@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AccountValues } from "../types";
@@ -17,6 +17,7 @@ export function CreateAccount(): React.ReactElement {
       await signUp(normalizedValues);
       form.resetFields();
       navigate("/login");
+      message.success("Account created successfully!");
     } catch (error) {
       console.error(error);
     }
@@ -100,15 +101,20 @@ export function CreateAccount(): React.ReactElement {
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (value && value.length < 5) {
-                      return Promise.reject(new Error("Password must be minimum 5 characters!"));
+                      return Promise.reject(
+                        new Error("Password must be minimum 5 characters!")
+                      );
                     }
                     if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(new Error("The new password that you entered do not match!"));
+                    return Promise.reject(
+                      new Error(
+                        "The new password that you entered do not match!"
+                      )
+                    );
                   }
                 })
-                
               ]}
             >
               <Input.Password
