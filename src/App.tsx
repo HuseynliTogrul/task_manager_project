@@ -1,10 +1,11 @@
-import { Login, CreateAccount, Home } from "./pages";
+import { Login, Register, Home, Header } from "./pages";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
+      <Header />
       <Routes>
         <Route
           path="/"
@@ -16,7 +17,7 @@ function App() {
         />
         <Route
           path="/create-account"
-          element={<CreateAccount />}
+          element={<Register />}
         />
       </Routes>
     </>

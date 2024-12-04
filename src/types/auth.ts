@@ -3,7 +3,7 @@ export interface LoginValues {
   password: string;
 }
 
-export interface AccountValues {
+export interface RegisterValues {
   username: string;
   password: string;
   name: string;

@@ -1,10 +1,10 @@
-export interface LoginProps {
+export interface LoginResponse {
   name: string;
   token: string;
   username: string;
 }
 
-export interface AccountProps {
+export interface RegisterResponse {
   blogs: string[];
   id: string;
   name: string;

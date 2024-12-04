@@ -22,21 +22,15 @@ export function Home(): React.ReactElement {
             <div className="p-5 my-0 mx-auto">
               <li className="flex gap-2 items-center">
                 <span>1</span>
-                <p className={`${isCloseMenu ? "hidden" : "block"}`}>
-                  salam necesen?
-                </p>
+                <p className={`${isCloseMenu ? "hidden" : "block"}`}>salam</p>
               </li>
               <li className="flex gap-2 items-center">
                 <span>2</span>
-                <p className={`${isCloseMenu ? "hidden" : "block"}`}>
-                  yaxsiyam
-                </p>
+                <p className={`${isCloseMenu ? "hidden" : "block"}`}>salam</p>
               </li>
               <li className="flex gap-2 items-center">
                 <span>3</span>
-                <p className={`${isCloseMenu ? "hidden" : "block"}`}>
-                  sen necesen?
-                </p>
+                <p className={`${isCloseMenu ? "hidden" : "block"}`}>salam</p>
               </li>
             </div>
             <div
