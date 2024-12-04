@@ -1,25 +1,28 @@
-import { Button, Form, Input, message } from "antd";
+import * as React from "react";
+import { Button, Form, Input } from "antd";
+import type { RegisterValues } from "../types";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { AccountValues } from "../types";
-import { signUp } from "../services";
+import { normalizeValues } from "../utils/helper";
 
-export function CreateAccount(): React.ReactElement {
+interface RegisterProps {
+  cb: (values: RegisterValues) => void;
+}
+
+export function RegisterForm({ cb }: RegisterProps): React.ReactElement {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
 
-  const onFinish = async (values: AccountValues) => {
-    const normalizedValues = Object.fromEntries(
-      Object.entries(values).map(([key, value]) => [key, value.trim()])
-    ) as AccountValues;
+  React.useEffect(() => {
+    return () => form.resetFields();
+  }, [form]);
+
+  const onFinish = async (values: RegisterValues) => {
+    const normalizedValues = normalizeValues(values);
 
     try {
-      await signUp(normalizedValues);
+      await cb(normalizedValues);
       form.resetFields();
-      navigate("/login");
-      message.success("Account created successfully!");
     } catch (error) {
-      console.error(error);
+      return error;
     }
   };
   return (
@@ -37,7 +40,7 @@ export function CreateAccount(): React.ReactElement {
             autoComplete="off"
             layout="vertical"
           >
-            <Form.Item
+            <Form.Item<RegisterValues>
               label="Username"
               className="mb-3 mt-2"
               name="username"
@@ -54,7 +57,7 @@ export function CreateAccount(): React.ReactElement {
                 placeholder="Username"
               />
             </Form.Item>
-            <Form.Item
+            <Form.Item<RegisterValues>
               label="Fullname"
               className="mb-3 mt-2"
               name="name"
@@ -71,7 +74,7 @@ export function CreateAccount(): React.ReactElement {
                 placeholder="Fullname"
               />
             </Form.Item>
-            <Form.Item
+            <Form.Item<RegisterValues>
               label="Password"
               className="mb-3 mt-2"
               name="password"
@@ -89,7 +92,7 @@ export function CreateAccount(): React.ReactElement {
                 placeholder="Password"
               />
             </Form.Item>
-            <Form.Item
+            <Form.Item<RegisterValues>
               label="Repeat Password"
               name="repeatPassword"
               dependencies={["password"]}
