@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services";
 import { LoginForm } from "../components";
@@ -7,6 +7,13 @@ import type { LoginValues } from "../types";
 
 export function Login(): React.ReactElement {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const loginHandler = async (values: LoginValues): Promise<void> => {
     try {

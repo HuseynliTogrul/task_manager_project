@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../services";
-import { RegisterForm } from "../components/RegisterForm";
 import { message } from "antd";
+import { RegisterForm } from "../components";
 import type { RegisterValues } from "../types";
 
 export function Register(): React.ReactElement {
