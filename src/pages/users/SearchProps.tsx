@@ -1,17 +1,14 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Input, Button, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import type { InputRef, TableColumnsType, TableColumnType } from "antd";
+import type { InputRef, TableColumnType } from "antd";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import type { DataType } from "../../types";
 
 type DataIndex = keyof DataType;
 
-export const ColumnSearchProps = (): [
-  TableColumnsType<DataType>,
-  React.RefObject<InputRef>
-] => {
+export const ColumnSearchProps = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -127,28 +124,5 @@ export const ColumnSearchProps = (): [
       )
   });
 
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "#",
-      dataIndex: "key",
-      key: "key",
-      width: "10%"
-    },
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      width: "40%",
-      ...getColumnSearchProps("username")
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "40%",
-      ...getColumnSearchProps("name")
-    }
-  ];
-
-  return [columns, searchInput];
+  return [getColumnSearchProps];
 };

@@ -1,25 +1,25 @@
+import { axiosInstanceApi } from "./../api/axiosInstanceApi";
 import { useState, useEffect } from "react";
 import { DataType, RegisterResponse } from "../types";
+import { formatData } from "../utils";
 
 export function useUser() {
   const [data, setData] = useState<DataType[]>([]);
 
   useEffect(() => {
-    fetch(`https://sample-backend-15ml.onrender.com/api/users`)
-      .then((res) => res.json())
-      .then((users) => {
-        const formattedData = users.map(
-          (user: RegisterResponse, index: number) => ({
-            key: `${index + 1}`,
-            username: user.username,
-            name: `${user.username || ""} ${user.name || ""}`
-          })
-        );
+    const fetchData = async () => {
+      const axiosInstance = axiosInstanceApi();
+      try {
+        const res = await axiosInstance.get("/users");
+        const data: RegisterResponse[] = await res.data;
+        const formattedData = formatData(data);
         setData(formattedData);
-      })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-      });
+      } catch (error) {
+        return error;
+      }
+    };
+
+    fetchData();
   }, []);
 
   return { data };

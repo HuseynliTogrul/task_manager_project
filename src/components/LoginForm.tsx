@@ -3,7 +3,7 @@ import { Button, Form, Input } from "antd";
 import type { LoginValues } from "../types";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { normalizeValues } from "../utils/helper";
+import { normalizeValues } from "../utils";
 
 interface LoginProps {
   cb: (values: LoginValues) => Promise<void>;

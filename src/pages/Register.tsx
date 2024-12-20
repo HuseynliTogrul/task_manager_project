@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { signUp } from "../services";
+import { loginApi } from "../services";
 import { message } from "antd";
 import { RegisterForm } from "../components";
 import type { RegisterValues } from "../types";
@@ -10,7 +10,7 @@ export function Register(): React.ReactElement {
 
   const registerHandler = async (values: RegisterValues): Promise<void> => {
     try {
-      await signUp(values);
+      await loginApi(values);
       navigate("/login");
       message.success("Account created successfully!");
     } catch (error) {

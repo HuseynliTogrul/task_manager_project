@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services";
+import { loginApi } from "../services";
 import { LoginForm } from "../components";
 import { message } from "antd";
 import type { LoginValues } from "../types";
@@ -17,7 +17,7 @@ export function Login(): React.ReactElement {
 
   const loginHandler = async (values: LoginValues): Promise<void> => {
     try {
-      const data = await login(values);
+      const data = await loginApi(values);
       if (data) {
         localStorage.setItem("currentUser", JSON.stringify(data?.token));
         navigate("/");

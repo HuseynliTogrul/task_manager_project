@@ -5,7 +5,8 @@ import {
   HomeOutlined,
   UnorderedListOutlined,
   FieldTimeOutlined,
-  CalendarOutlined
+  CalendarOutlined,
+  ProfileOutlined
 } from "@ant-design/icons";
 import { MenuProps } from "rc-menu";
 
@@ -28,6 +29,7 @@ function getItem(
 export const items: MenuItem[] = [
   getItem(<Link to="/">Dashboard</Link>, "/", <HomeOutlined />),
   getItem(<Link to="/users">Users</Link>, "/users", <UserOutlined />),
+  getItem(<Link to="/blogs">Blogs</Link>, "/blogs", <ProfileOutlined />),
   getItem(
     <Link to="/projects">Projects</Link>,
     "/projects",

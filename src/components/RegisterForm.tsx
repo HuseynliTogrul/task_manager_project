@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button, Form, Input } from "antd";
 import type { RegisterValues } from "../types";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
-import { normalizeValues } from "../utils/helper";
+import { normalizeValues } from "../utils";
 
 interface RegisterProps {
   cb: (values: RegisterValues) => void;

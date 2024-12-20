@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { Users } from "./pages/users";
 import { Dashboard } from "./pages/common-info";
+import { Blogs } from "./pages/blogs";
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
             <Route
               path="/users"
               element={<Users />}
+            />
+            <Route
+              path="/blogs"
+              element={<Blogs />}
             />
             <Route
               path="/projects"

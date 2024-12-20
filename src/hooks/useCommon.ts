@@ -1,6 +1,6 @@
-import { ChartEntry } from "../types";
-import { formatChartData } from "../utils/helper";
-import { RegisterResponse } from "../types/api";
+import { axiosInstanceApi } from "./../api/axiosInstanceApi";
+import { ChartEntry, RegisterResponse } from "../types";
+import { formatChartData } from "../utils";
 import { useEffect, useState } from "react";
 
 export const useCommon = () => {
@@ -8,15 +8,14 @@ export const useCommon = () => {
 
   useEffect(() => {
     const fetchChartData = async () => {
+      const axiosInstance = axiosInstanceApi();
       try {
-        const response = await fetch(
-          "https://sample-backend-15ml.onrender.com/api/users"
-        );
-        const data: RegisterResponse[] = await response.json();
+        const res = await axiosInstance.get("/users");
+        const data: RegisterResponse[] = await res.data;
         const formattedData = formatChartData(data);
         setChartData(formattedData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        return error;
       }
     };
     fetchChartData();

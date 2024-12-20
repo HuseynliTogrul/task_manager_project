@@ -1,59 +1,83 @@
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Legend
-} from "recharts";
-import { useCommon } from "../../hooks";
+import React, { useEffect, useState } from "react";
+import { Line } from "@ant-design/plots";
+import type { BlogResponse } from "../../types";
+import { commonInfoApi } from "../../services";
 
-export const Dashboard = (): React.ReactElement => {
-  const { chartData } = useCommon();
+export const Dashboard: React.FC = () => {
+  const [data, setData] = useState<{ day: string; count: number }[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const commonInfo = await commonInfoApi();
+
+        const today = new Date();
+        const last7Days = Array.from({ length: 7 }, (_, i) => {
+          const day = new Date();
+          day.setDate(today.getDate() - i);
+          return day.toLocaleDateString("en-US", { weekday: "long" });
+        }).reverse();
+
+        const blogCounts: Record<string, number> = last7Days.reduce(
+          (acc, day) => {
+            acc[day] = 0;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
+
+        commonInfo.forEach((blog: BlogResponse) => {
+          const createdAt = new Date(blog.createdAt);
+          const dayName = createdAt.toLocaleDateString("en-US", {
+            weekday: "long"
+          });
+          if (dayName in blogCounts) {
+            blogCounts[dayName]++;
+          }
+        });
+
+        const chartData = Object.entries(blogCounts).map(([day, count]) => ({
+          day,
+          count
+        }));
+
+        setData(chartData);
+      } catch (error) {
+        return error;
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const config = {
+    data,
+    xField: "day",
+    yField: "count",
+    point: {
+      size: 5,
+      shape: "diamond"
+    },
+    xAxis: {
+      title: { text: "Days of the Week" }
+    },
+    yAxis: {
+      title: { text: "Number of Blogs" },
+      min: 0
+    },
+    tooltip: {
+      formatter: (datum: { day: string; count: number }) => ({
+        name: "Blogs Created",
+        value: datum.count
+      })
+    },
+    smooth: true
+  };
 
   return (
-    <div className="w-full h-[500px] bg-[#f9f9f9] rounded-[10px] p-5 shadow-[0_4px_10px_rgba(0,0,0,0,1)]">
-      <h3 className="text-center mb-5 text-[#333] font-serif">Analysis</h3>
-      <ResponsiveContainer>
-        <LineChart data={chartData}>
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="#ccc"
-          />
-          <XAxis
-            dataKey="blog"
-            tick={{ fontSize: 12, fill: "#666" }}
-          />
-          <YAxis tick={{ fontSize: 12, fill: "#666" }} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#fff",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              fontSize: "14px"
-            }}
-          />
-          <Legend
-            verticalAlign="top"
-            align="center"
-            wrapperStyle={{
-              paddingBottom: "10px",
-              fontSize: "14px",
-              fontFamily: "Arial, sans-serif"
-            }}
-          />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#82ca9d"
-            strokeWidth={3}
-            dot={{ fill: "#82ca9d", strokeWidth: 2, r: 5 }}
-            activeDot={{ r: 8, fill: "#8884d8", stroke: "#555" }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div>
+      <h3 className="text-center mb-4 text-lg">Weekly Blog Chart</h3>
+      <Line {...config} />
     </div>
   );
 };

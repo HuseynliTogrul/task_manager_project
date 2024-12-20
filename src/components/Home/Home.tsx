@@ -15,10 +15,9 @@ export function Home({ children }: IProps): React.ReactElement {
   const [collapsed, setCollapsed] = useState(false);
   const currentUser = localStorage.getItem("currentUser");
   const navigate = useNavigate();
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
     if (!currentUser) {
       navigate("/login");
     }
@@ -56,7 +55,7 @@ export function Home({ children }: IProps): React.ReactElement {
               transition: "margin-left 0.3s"
             }}
           >
-            <Content className="mt-[94px] p-6 pt-[23px] w-full">
+            <Content className="mt-[94px] p-6 pt-[23px] w-full bg-[aliceblue]">
               {children || <Outlet />}
             </Content>
           </Layout>
