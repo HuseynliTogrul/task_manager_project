@@ -22,7 +22,7 @@ export async function loginApi(values: LoginValues): Promise<LoginResponse> {
 
 export async function signUpApi(
   values: RegisterValues
-): Promise<RegisterResponse> {
+): Promise<RegisterResponse | undefined> {
   try {
     const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/users",
@@ -31,6 +31,6 @@ export async function signUpApi(
     return res.data as RegisterResponse;
   } catch (e) {
     displayApiError(e);
-    throw new Error("Account creation failed");
+    // throw new Error("Account creation failed");
   }
 }

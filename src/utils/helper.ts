@@ -17,6 +17,6 @@ export function formatData(data: RegisterResponse[]): DataType[] {
   return data.map((user: RegisterResponse, index: number) => ({
     key: `${index + 1}`,
     username: user.username,
-    name: `${user.username || ""} ${user.name || ""}`
+    name: user.name || ""
   }));
 }

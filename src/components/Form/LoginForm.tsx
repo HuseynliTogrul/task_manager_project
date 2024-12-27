@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Button, Form, Input } from "antd";
-import type { LoginValues } from "../types";
+import { Button, Form, Input, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { normalizeValues } from "../utils";
+import { normalizeValues } from "../../utils";
+import { LoginValues } from "../../types";
 
 interface LoginProps {
   cb: (values: LoginValues) => Promise<void>;
@@ -22,8 +22,8 @@ export function LoginForm({ cb }: LoginProps): React.ReactElement {
     try {
       await cb(normalizedValues);
       form.resetFields();
-    } catch (error) {
-      return error;
+    } catch {
+      message.error("Invalid Username or Password!");
     }
   };
 

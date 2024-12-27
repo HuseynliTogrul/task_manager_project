@@ -1,3 +1,5 @@
-export { LoginForm } from "./LoginForm";
-export { RegisterForm } from "./RegisterForm";
-export { Header } from './layout/Header'
+export { LoginForm } from "./Form/LoginForm";
+export { RegisterForm } from "./Form/RegisterForm";
+export { Header } from "./Layout/Header";
+export { AppLayout } from "./Layout";
+export { Layout } from "./Layout/Layout";

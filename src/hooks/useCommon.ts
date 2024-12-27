@@ -1,7 +1,8 @@
-import { axiosInstanceApi } from "./../api/axiosInstanceApi";
-import { ChartEntry, RegisterResponse } from "../types";
-import { formatChartData } from "../utils";
 import { useEffect, useState } from "react";
+import { message } from "antd";
+import { axiosInstanceApi } from "../api";
+import { formatChartData } from "../utils";
+import type { ChartEntry, RegisterResponse } from "../types";
 
 export const useCommon = () => {
   const [chartData, setChartData] = useState<ChartEntry[]>([]);
@@ -14,8 +15,8 @@ export const useCommon = () => {
         const data: RegisterResponse[] = await res.data;
         const formattedData = formatChartData(data);
         setChartData(formattedData);
-      } catch (error) {
-        return error;
+      } catch {
+        message.error("Failed to fetch data");
       }
     };
     fetchChartData();

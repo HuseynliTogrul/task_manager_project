@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, message, Popconfirm, Table, Typography } from "antd";
-import type { BlogValues, DataType } from "../../types";
-import { useBlog } from "../../hooks";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  CheckOutlined
+} from "@ant-design/icons";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Table,
+  Typography
+} from "antd";
 import { ModalBlog } from "./ModalBlog";
-import { deleteBlogApi } from "../../services";
+import { useBlog } from "../../hooks";
+import type { BlogValues, DataType } from "../../types";
+import { deleteBlogApi, updateBlogApi } from "../../services";
 
 export const Blogs = (): React.ReactElement => {
   const [tableParams, setTableParams] = useState({
@@ -12,10 +26,12 @@ export const Blogs = (): React.ReactElement => {
     pageSize: 6
   });
   const [rerender, setRerender] = useState<boolean>(false);
-  const { data } = useBlog(rerender);
+  const { data, setData } = useBlog(rerender);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
+  const [editingKey, setEditingKey] = useState<string>("");
+
   const [currentTableSource, setCurrentTableSource] = useState(0);
 
   const handleDelete = async (key: string, currentSource: number) => {
@@ -28,6 +44,84 @@ export const Blogs = (): React.ReactElement => {
       });
     }
     message.success("Blog successfully deleted");
+  };
+
+  interface EditableCellProps {
+    editing: boolean;
+    dataIndex: string;
+    title: React.ReactNode;
+    inputType: "number" | "text";
+    item: BlogValues;
+    index: number;
+    children: React.ReactNode;
+    onCancel: () => void;
+  }
+
+  const EditableCell: React.FC<EditableCellProps> = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    children,
+    ...restProps
+  }) => {
+    const inputNode =
+      inputType === "number" ? <InputNumber /> : <Input type={inputType} />;
+
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{ margin: 0 }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`
+              }
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+  const isEditing = (item: BlogValues) => item.key === editingKey;
+
+  const edit = (item: BlogValues) => {
+    form.setFieldsValue({ ...item });
+    setEditingKey(item.key);
+  };
+
+  const cancel = () => {
+    setEditingKey("");
+  };
+
+  const save = async (key: string) => {
+    try {
+      const row = (await form.validateFields()) as BlogValues;
+      const newData = [...data];
+      const index = newData.findIndex((item) => key === item.key);
+
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, { ...item, ...row });
+        await updateBlogApi(key, row);
+        setRerender(!rerender);
+        setData(newData);
+        setEditingKey("");
+        message.success("Changes saved successfully");
+      } else {
+        newData.push(row);
+        setData(newData);
+        setEditingKey("");
+      }
+    } catch {
+      message.error("Failed to save changes");
+    }
   };
 
   const showModal = () => {
@@ -67,7 +161,8 @@ export const Blogs = (): React.ReactElement => {
     {
       title: "Actions",
       key: "actions",
-      render: (item: DataType) => {
+      render: (item: BlogValues) => {
+        const editable = isEditing(item);
         return (
           <>
             <Popconfirm
@@ -83,17 +178,46 @@ export const Blogs = (): React.ReactElement => {
                 title="Delete"
               />
             </Popconfirm>
-            <Typography.Link>
-              <EditOutlined
-                title="Edit"
-                className="cursor-pointer rounded-[50%] p-[9px] text-[#ffa000] border border-solid border-[#ffa000]"
-              />
-            </Typography.Link>
+            {editable ? (
+              <Typography.Link onClick={() => save(item.key)}>
+                <CheckOutlined
+                  title="Save"
+                  className="cursor-pointer rounded-[50%] p-[9px] text-green-500 border border-solid border-green-500"
+                />
+              </Typography.Link>
+            ) : (
+              <Typography.Link
+                disabled={editingKey !== ""}
+                onClick={() => edit(item)}
+              >
+                <EditOutlined
+                  title="Edit"
+                  className="cursor-pointer rounded-[50%] p-[9px] text-[#ffa000] border border-solid border-[#ffa000]"
+                />
+              </Typography.Link>
+            )}
           </>
         );
       }
     }
   ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (item: BlogValues) => ({
+        item,
+        inputType: col.dataIndex === "url" ? "url" : "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(item),
+        onCancel: cancel
+      })
+    };
+  });
 
   return (
     <>
@@ -112,9 +236,12 @@ export const Blogs = (): React.ReactElement => {
         component={false}
       >
         <Table
-          dataSource={data}
+          components={{
+            body: { cell: EditableCell }
+          }}
           bordered
-          columns={columns}
+          dataSource={data}
+          columns={mergedColumns}
           pagination={{
             position: ["bottomCenter"],
             className: "!mb-0",
@@ -133,15 +260,15 @@ export const Blogs = (): React.ReactElement => {
           className="[&_.ant-spin-container]:h-[72vh] [&_.ant-spin-container]:flex [&_.ant-spin-container]:flex-col [&_.ant-spin-container]:justify-between"
         />
       </Form>
-      {
-        isModalOpen && <ModalBlog
-        handleCancel={handleCancel}
-        isModalOpen={isModalOpen}
-        rerender={rerender}
-        setRerender={setRerender}
-        setModalVisibility={setIsModalOpen}
-      />
-      }
+      {isModalOpen && (
+        <ModalBlog
+          handleCancel={handleCancel}
+          isModalOpen={isModalOpen}
+          rerender={rerender}
+          setRerender={setRerender}
+          setModalVisibility={setIsModalOpen}
+        />
+      )}
     </>
   );
 };

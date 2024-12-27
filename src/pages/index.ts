@@ -1,4 +1,5 @@
-export { Home } from '../components/Home/Home'
-export { Login } from './Login'
-export { Register } from './Register'
-export { Header } from "../components/layout/Header"
+export { Login } from "./auth/Login";
+export { Register } from "./auth/Register";
+export { Blogs } from "./blogs";
+export { Dashboard } from "./common-info";
+export { Users } from "./users";

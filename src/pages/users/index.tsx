@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
-import type { DataType } from "../../types";
 import { useUser } from "../../hooks";
 import { ColumnSearchProps } from "./SearchProps";
 import { ColumnsType } from "antd/es/table";
+import type { DataType } from "../../types";
 
 export const Users = (): React.ReactElement => {
   const [tableParams, setTableParams] = useState({

@@ -1,7 +1,8 @@
-import { axiosInstanceApi } from "./../api/axiosInstanceApi";
 import { useState, useEffect } from "react";
-import { DataType, RegisterResponse } from "../types";
+import { message } from "antd";
+import { axiosInstanceApi } from "../api";
 import { formatData } from "../utils";
+import type { DataType, RegisterResponse } from "../types";
 
 export function useUser() {
   const [data, setData] = useState<DataType[]>([]);
@@ -14,8 +15,8 @@ export function useUser() {
         const data: RegisterResponse[] = await res.data;
         const formattedData = formatData(data);
         setData(formattedData);
-      } catch (error) {
-        return error;
+      } catch {
+        message.error("Failed to fetch data");
       }
     };
 

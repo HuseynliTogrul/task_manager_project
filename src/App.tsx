@@ -1,10 +1,7 @@
-import { Login, Register, Home } from "./pages";
-import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { Layout } from "./components/layout/Layout";
-import { Users } from "./pages/users";
-import { Dashboard } from "./pages/common-info";
-import { Blogs } from "./pages/blogs";
+import { Login, Register, Dashboard, Users, Blogs } from "./pages";
+import { AppLayout, Layout } from "./components";
+import "./App.css";
 
 function App() {
   return (
@@ -13,7 +10,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Home />}
+            element={<AppLayout />}
           >
             <Route
               index

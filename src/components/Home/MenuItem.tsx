@@ -26,7 +26,7 @@ function getItem(
   } as MenuItem;
 }
 
-export const items: MenuItem[] = [
+export const menuItems: MenuItem[] = [
   getItem(<Link to="/">Dashboard</Link>, "/", <HomeOutlined />),
   getItem(<Link to="/users">Users</Link>, "/users", <UserOutlined />),
   getItem(<Link to="/blogs">Blogs</Link>, "/blogs", <ProfileOutlined />),

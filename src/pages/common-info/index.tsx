@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "@ant-design/plots";
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip
+} from "recharts";
 import type { BlogResponse } from "../../types";
 import { commonInfoApi } from "../../services";
+import { message } from "antd";
 
-export const Dashboard: React.FC = () => {
+export const Dashboard = (): React.ReactElement => {
   const [data, setData] = useState<{ day: string; count: number }[]>([]);
 
   useEffect(() => {
@@ -40,44 +48,37 @@ export const Dashboard: React.FC = () => {
           day,
           count
         }));
-
         setData(chartData);
-      } catch (error) {
-        return error;
+      } catch {
+        message.error("Failed to fetch data");
       }
     };
 
     fetchData();
   }, []);
 
-  const config = {
-    data,
-    xField: "day",
-    yField: "count",
-    point: {
-      size: 5,
-      shape: "diamond"
-    },
-    xAxis: {
-      title: { text: "Days of the Week" }
-    },
-    yAxis: {
-      title: { text: "Number of Blogs" },
-      min: 0
-    },
-    tooltip: {
-      formatter: (datum: { day: string; count: number }) => ({
-        name: "Blogs Created",
-        value: datum.count
-      })
-    },
-    smooth: true
-  };
-
   return (
     <div>
       <h3 className="text-center mb-4 text-lg">Weekly Blog Chart</h3>
-      <Line {...config} />
+      {!!data.length && (
+        <LineChart
+          width={800}
+          height={300}
+          data={data}
+          style={{ width: "100%" }}
+        >
+          <Line
+            type="monotone"
+            dataKey="count"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+          <Tooltip formatter={(value, name) => [`${value}`, `${name}`]} />
+          <CartesianGrid stroke="#ccc" />
+          <XAxis dataKey="day" />
+          <YAxis allowDecimals={false} />
+        </LineChart>
+      )}
     </div>
   );
 };

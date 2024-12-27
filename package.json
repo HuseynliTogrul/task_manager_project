@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/plots": "^2.3.2",
     "@types/react-highlight-words": "^0.20.0",
     "antd": "^5.22.2",
     "antd-style": "^3.7.1",

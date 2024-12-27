@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Content } from "antd/es/layout/layout";
-import { items } from "./MenuItem";
+import { Layout, Menu } from "antd";
+import { menuItems } from "../Home/MenuItem";
 
 const { Sider } = Layout;
 
@@ -11,7 +11,7 @@ interface IProps {
   children?: React.ReactNode;
 }
 
-export function Home({ children }: IProps): React.ReactElement {
+export function AppLayout({ children }: IProps): React.ReactElement {
   const [collapsed, setCollapsed] = useState(false);
   const currentUser = localStorage.getItem("currentUser");
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export function Home({ children }: IProps): React.ReactElement {
               theme="dark"
               defaultSelectedKeys={[pathname]}
               mode="inline"
-              items={items}
+              items={menuItems}
             />
           </Sider>
           <Layout

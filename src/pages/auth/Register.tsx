@@ -1,16 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../services";
 import { message } from "antd";
-import { RegisterForm } from "../components";
-import type { RegisterValues } from "../types";
+import { RegisterValues } from "../../types";
+import { signUpApi } from "../../services";
+import { RegisterForm } from "../../components";
 
 export function Register(): React.ReactElement {
   const navigate = useNavigate();
 
-  const registerHandler = async (values: RegisterValues): Promise<void> => {
+  const handleRegister = async (values: RegisterValues): Promise<void> => {
     try {
-      await loginApi(values);
+      await signUpApi(values);
       navigate("/login");
       message.success("Account created successfully!");
     } catch (error) {
@@ -20,5 +20,5 @@ export function Register(): React.ReactElement {
     }
   };
 
-  return <RegisterForm cb={registerHandler} />;
+  return <RegisterForm cb={handleRegister} />;
 }

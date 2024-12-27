@@ -1,6 +1,6 @@
-import type { BlogValues } from "../types";
-import { axiosInstanceApi } from "../api/axiosInstanceApi";
+import { axiosInstanceApi } from "../api";
 import { displayApiError } from "../utils";
+import type { BlogValues } from "../types";
 
 const axiosInstance = axiosInstanceApi();
 

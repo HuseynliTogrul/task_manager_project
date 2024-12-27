@@ -32,3 +32,9 @@ body {
   src: url("fonts/Montserrat-Regular.woff2") format("woff2"),
     url("fonts/Montserrat-Regular.woff") format("woff");
 }
+
+.ant-typography-disabled span {
+  color: rgba(255, 160, 0, 0.4);
+  border-color: rgba(255, 160, 0, 0.4);
+  cursor: not-allowed;
+}

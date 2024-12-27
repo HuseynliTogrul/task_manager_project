@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { message } from "antd";
+import { axiosInstanceApi } from "../api";
 import type { BlogResponse, BlogValues } from "../types";
-import { axiosInstanceApi } from "../api/axiosInstanceApi";
 
 export function useBlog(refetch: boolean) {
   const [data, setData] = useState<BlogValues[]>([]);
@@ -16,14 +17,13 @@ export function useBlog(refetch: boolean) {
           url: blog.url
         }));
         setData(blogList);
-      } catch (error) {
-        return error;
+      } catch {
+        message.error("Failed to fetch blogs");
       }
     };
 
     fetchBlogs();
   }, [refetch]);
 
-  return { data };
+  return { data, setData };
 }
-

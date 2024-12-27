@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../services";
-import { LoginForm } from "../components";
 import { message } from "antd";
-import type { LoginValues } from "../types";
+import { loginApi } from "../../services";
+import { LoginForm } from "../../components";
+import type { LoginValues } from "../../types";
 
 export function Login(): React.ReactElement {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export function Login(): React.ReactElement {
     }
   }, [navigate]);
 
-  const loginHandler = async (values: LoginValues): Promise<void> => {
+  const handleLogin = async (values: LoginValues): Promise<void> => {
     try {
       const data = await loginApi(values);
       if (data) {
@@ -30,5 +30,5 @@ export function Login(): React.ReactElement {
     }
   };
 
-  return <LoginForm cb={loginHandler} />;
+  return <LoginForm cb={handleLogin} />;
 }

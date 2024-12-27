@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Button, Form, Input } from "antd";
-import type { RegisterValues } from "../types";
+import { Button, Form, Input, message } from "antd";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
-import { normalizeValues } from "../utils";
+import { normalizeValues } from "../../utils";
+import { RegisterValues } from "../../types";
 
 interface RegisterProps {
   cb: (values: RegisterValues) => void;
@@ -21,8 +21,8 @@ export function RegisterForm({ cb }: RegisterProps): React.ReactElement {
     try {
       await cb(normalizedValues);
       form.resetFields();
-    } catch (error) {
-      return error;
+    } catch {
+      message.error("Failed to create account");
     }
   };
   return (
