@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Button, Form, Input } from "antd";
-import type { RegisterValues } from "../types";
+import { Button, Form, Input, message } from "antd";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
-import { normalizeValues } from "../utils/helper";
+import { normalizeValues } from "../../utils";
+import { RegisterValues } from "../../types";
 
 interface RegisterProps {
   cb: (values: RegisterValues) => void;
@@ -21,18 +21,20 @@ export function RegisterForm({ cb }: RegisterProps): React.ReactElement {
     try {
       await cb(normalizedValues);
       form.resetFields();
-    } catch (error) {
-      return error;
+    } catch {
+      message.error("Failed to create account");
     }
   };
   return (
-    <div className="w-[1200px] max-xl:w-full max-sm:px-5 max-sm:mt-6 max-sm:h-full h-screen my-0 mx-auto flex justify-center items-center mt-[50px]">
+    <div className="w-[1200px] max-xl:w-full max-sm:px-5 mt-[100px] h-screen my-0 mx-auto flex justify-center items-center">
       <div className="w-[400px] max-sm:w-full bg-[rgba(255,255,255,0.13)] max-sm:bg-white max-sm:pb-10 shadow-[rgba(14,30,37,0.12)_0px_2px_4px_0px,rgba(14,30,37,0.32)_0px_2px_16px_0px] rounded-xl pt-[15px] pb-[60px] px-[30px] relative bg-[rgba(255,255,255,0.13)">
         <div className="max-sm:hidden">
           <div className="w-[150px] h-[150px] absolute top-[-75px] left-[-75px] rounded-full bg-[linear-gradient(#5c6bc0,#7986cb)] z-[-1]"></div>
           <div className="w-[150px] h-[150px] absolute bottom-[-75px] right-[-75px] rounded-full z-[-1] bg-[linear-gradient(#ec5f64,#ee6e73)]"></div>
         </div>
-        <h1 className="text-center text-3xl m-5">Create Account</h1>
+        <h1 className="text-center text-3xl m-5 max-sm:text-[25px]">
+          Create Account
+        </h1>
         <div className="inputUser">
           <Form
             form={form}

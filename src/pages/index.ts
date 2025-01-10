@@ -1,4 +1,8 @@
-export { Home } from './Home'
-export { Login } from './Login'
-export { Register } from './Register'
-export { Header } from "./Header"
+export { Login } from "./auth/Login";
+export { Register } from "./auth/Register";
+export { Blogs } from "./blogs";
+export { Dashboard } from "./common-info";
+export { Users } from "./users";
+
+
+

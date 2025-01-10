@@ -1,9 +1,13 @@
-import { LoginValues, RegisterValues } from "./../types";
-import axios, { AxiosError } from "axios";
-import { message } from "antd";
-import { RegisterResponse, LoginResponse } from "../types/api";
+import axios from "axios";
+import {
+  RegisterResponse,
+  LoginResponse,
+  LoginValues,
+  RegisterValues
+} from "../types";
+import { displayApiError } from "../utils";
 
-export async function login(values: LoginValues): Promise<LoginResponse> {
+export async function loginApi(values: LoginValues): Promise<LoginResponse> {
   try {
     const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/login",
@@ -11,17 +15,14 @@ export async function login(values: LoginValues): Promise<LoginResponse> {
     );
     return res.data as LoginResponse;
   } catch (e) {
-    if (e instanceof AxiosError) {
-      const error = e.response?.data?.message;
-      message.error(error);
-    } else {
-      message.error("An unexpected error occurred.");
-    }
+    displayApiError(e);
     throw new Error("Login failed");
   }
 }
 
-export async function signUp(values: RegisterValues): Promise<RegisterResponse> {
+export async function signUpApi(
+  values: RegisterValues
+): Promise<RegisterResponse | undefined> {
   try {
     const res = await axios.post(
       "https://sample-backend-15ml.onrender.com/api/users",
@@ -29,10 +30,7 @@ export async function signUp(values: RegisterValues): Promise<RegisterResponse> 
     );
     return res.data as RegisterResponse;
   } catch (e) {
-    if (e instanceof AxiosError) {
-      const error = e.response?.data.message;
-      message.error(error);
-    }
-    throw new Error("Account creation failed");
+    displayApiError(e);
+    // throw new Error("Account creation failed");
   }
 }
