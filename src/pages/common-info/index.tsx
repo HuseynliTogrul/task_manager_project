@@ -11,6 +11,8 @@ import type { BlogResponse } from "../../types";
 import { commonInfoApi } from "../../services";
 import { message } from "antd";
 
+type CustomDate = [number, number, number]; // tuple
+
 export const Dashboard = (): React.ReactElement => {
   const [data, setData] = useState<{ day: string; count: number }[]>([]);
 
@@ -23,7 +25,7 @@ export const Dashboard = (): React.ReactElement => {
         const last7Days = Array.from({ length: 7 }, (_, i) => {
           const day = new Date();
           day.setDate(today.getDate() - i);
-          return day.toLocaleDateString("en-US", { weekday: "long" });
+          return day.toLocaleDateString();
         }).reverse();
 
         const blogCounts: Record<string, number> = last7Days.reduce(
@@ -35,19 +37,26 @@ export const Dashboard = (): React.ReactElement => {
         );
 
         commonInfo.forEach((blog: BlogResponse) => {
-          const createdAt = new Date(blog.createdAt);
-          const dayName = createdAt.toLocaleDateString("en-US", {
-            weekday: "long"
-          });
-          if (dayName in blogCounts) {
-            blogCounts[dayName]++;
+          const updatedAt = new Date(blog.updatedAt).toLocaleDateString();
+          if (updatedAt in blogCounts) {
+            blogCounts[updatedAt]++;
           }
         });
 
-        const chartData = Object.entries(blogCounts).map(([day, count]) => ({
-          day,
-          count
-        }));
+        const chartData = Object.entries(blogCounts)
+          .map(([date, count]): [CustomDate, number] => [
+            date.split(".").map((n) => +n) as CustomDate,
+            count
+          ])
+          .map(([date, count]) => ({
+            day: new Date(date[2], date[1] - 1, date[0]).toLocaleDateString(
+              "en-US",
+              {
+                weekday: "long"
+              }
+            ),
+            count
+          }));
         setData(chartData);
       } catch {
         message.error("Failed to fetch data");
