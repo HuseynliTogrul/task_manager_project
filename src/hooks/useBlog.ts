@@ -5,6 +5,7 @@ import type { BlogResponse, BlogValues } from "../types";
 
 export function useBlog(refetch: boolean) {
   const [data, setData] = useState<BlogValues[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -19,11 +20,13 @@ export function useBlog(refetch: boolean) {
         setData(blogList);
       } catch {
         message.error("Failed to fetch blogs");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchBlogs();
   }, [refetch]);
 
-  return { data, setData };
+  return { data, setData, isLoading };
 }

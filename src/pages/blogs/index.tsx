@@ -19,6 +19,7 @@ import { ModalBlog } from "./ModalBlog";
 import { useBlog } from "../../hooks";
 import type { BlogValues, DataType } from "../../types";
 import { deleteBlogApi, updateBlogApi } from "../../services";
+import { Loading } from "../../components";
 
 export const Blogs = (): React.ReactElement => {
   const [tableParams, setTableParams] = useState({
@@ -26,7 +27,7 @@ export const Blogs = (): React.ReactElement => {
     pageSize: 6
   });
   const [rerender, setRerender] = useState<boolean>(false);
-  const { data, setData } = useBlog(rerender);
+  const { data, setData, isLoading } = useBlog(rerender);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
@@ -221,53 +222,59 @@ export const Blogs = (): React.ReactElement => {
 
   return (
     <>
-      <div className="text-end ">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          className="!py-[10px] !h-full !mb-5 border border-green-700 bg-white text-green-700 hover:!bg-green-700"
-          onClick={showModal}
-        >
-          Blog əlavə et
-        </Button>
-      </div>
-      <Form
-        form={form}
-        component={false}
-      >
-        <Table
-          components={{
-            body: { cell: EditableCell }
-          }}
-          bordered
-          dataSource={data}
-          columns={mergedColumns}
-          pagination={{
-            position: ["bottomCenter"],
-            className: "!mb-0",
-            ...tableParams
-          }}
-          onChange={(pagination, _, __, extra) => {
-            setCurrentTableSource(extra.currentDataSource.length);
-            setTableParams({
-              ...tableParams,
-              current: pagination.current || 1
-            });
-          }}
-          rowClassName={() =>
-            "editable-row hover:bg-gray-200 transition duration-300"
-          }
-          className="[&_.ant-spin-container]:h-[72vh] [&_.ant-spin-container]:flex [&_.ant-spin-container]:flex-col [&_.ant-spin-container]:justify-between"
-        />
-      </Form>
-      {isModalOpen && (
-        <ModalBlog
-          handleCancel={handleCancel}
-          isModalOpen={isModalOpen}
-          rerender={rerender}
-          setRerender={setRerender}
-          setModalVisibility={setIsModalOpen}
-        />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div>
+          <div className="text-end ">
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="!py-[10px] !h-full !mb-5 border border-green-700 bg-white text-green-700 hover:!bg-green-700"
+              onClick={showModal}
+            >
+              Blog əlavə et
+            </Button>
+          </div>
+          <Form
+            form={form}
+            component={false}
+          >
+            <Table
+              components={{
+                body: { cell: EditableCell }
+              }}
+              bordered
+              dataSource={data}
+              columns={mergedColumns}
+              pagination={{
+                position: ["bottomCenter"],
+                className: "!mb-0",
+                ...tableParams
+              }}
+              onChange={(pagination, _, __, extra) => {
+                setCurrentTableSource(extra.currentDataSource.length);
+                setTableParams({
+                  ...tableParams,
+                  current: pagination.current || 1
+                });
+              }}
+              rowClassName={() =>
+                "editable-row hover:bg-gray-200 transition duration-300"
+              }
+              className="[&_.ant-spin-container]:h-[72vh] [&_.ant-spin-container]:flex [&_.ant-spin-container]:flex-col [&_.ant-spin-container]:justify-between"
+            />
+          </Form>
+          {isModalOpen && (
+            <ModalBlog
+              handleCancel={handleCancel}
+              isModalOpen={isModalOpen}
+              rerender={rerender}
+              setRerender={setRerender}
+              setModalVisibility={setIsModalOpen}
+            />
+          )}
+        </div>
       )}
     </>
   );
