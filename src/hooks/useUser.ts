@@ -6,6 +6,7 @@ import type { DataType, RegisterResponse } from "../types";
 
 export function useUser() {
   const [data, setData] = useState<DataType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,11 +18,13 @@ export function useUser() {
         setData(formattedData);
       } catch {
         message.error("Failed to fetch data");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  return { data };
+  return { data, isLoading };
 }

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   UserOutlined,
-  ProjectOutlined,
   HomeOutlined,
   UnorderedListOutlined,
   FieldTimeOutlined,
@@ -30,11 +29,6 @@ export const menuItems: MenuItem[] = [
   getItem(<Link to="/">Dashboard</Link>, "/", <HomeOutlined />),
   getItem(<Link to="/users">Users</Link>, "/users", <UserOutlined />),
   getItem(<Link to="/blogs">Blogs</Link>, "/blogs", <ProfileOutlined />),
-  getItem(
-    <Link to="/projects">Projects</Link>,
-    "/projects",
-    <ProjectOutlined />
-  ),
   getItem(<Link to="/tasks">Tasks</Link>, "/tasks", <UnorderedListOutlined />),
   getItem(
     <Link to="/time-tracking">Time tracking</Link>,
@@ -43,7 +37,7 @@ export const menuItems: MenuItem[] = [
   ),
   getItem(
     <Link to="/my-calendar">My Calendar</Link>,
-    "my-calendar",
+    "/my-calendar",
     <CalendarOutlined />
   )
 ];

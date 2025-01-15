@@ -1,5 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import { Login, Register, Dashboard, Users, Blogs } from "./pages";
+import {
+  Login,
+  Register,
+  Dashboard,
+  Users,
+  Blogs,
+  MyCalendar,
+  Tasks
+} from "./pages";
 import { AppLayout, Layout } from "./components";
 import "./App.css";
 
@@ -25,12 +33,8 @@ function App() {
               element={<Blogs />}
             />
             <Route
-              path="/projects"
-              // element={<Projects />}
-            />
-            <Route
               path="/tasks"
-              // element={<Tasks />}
+              element={<Tasks />}
             />
             <Route
               path="/time-tracking"
@@ -38,7 +42,7 @@ function App() {
             />
             <Route
               path="/my-calendar"
-              // element={<MyCalendar />}
+              element={<MyCalendar />}
             />
           </Route>
           <Route

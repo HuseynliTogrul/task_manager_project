@@ -31,6 +31,5 @@ export async function signUpApi(
     return res.data as RegisterResponse;
   } catch (e) {
     displayApiError(e);
-    // throw new Error("Account creation failed");
   }
 }
