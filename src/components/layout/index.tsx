@@ -28,12 +28,12 @@ export function AppLayout({ children }: IProps): React.ReactElement {
       {currentUser && (
         <Layout className="h-screen">
           <Sider
-            className="mt-[94px] w-screen bg-[cadetblue] h-100 fixed top-0 bottom-0"
+            className="mt-[94px] w-screen bg-[cadetblue] h-100 fixed top-0 bottom-0 max-md:!w-[80px] max-md:!max-w-[80px] max-md:!min-w-[80px]"
             collapsible
             width={220}
             collapsed={collapsed}
             trigger={
-              <div className="bg-[rgb(8_104_107)]">
+              <div className="bg-[rgb(8_104_107)] max-md:!w-[80px]">
                 {collapsed ? <RightOutlined /> : <LeftOutlined />}
               </div>
             }
@@ -49,7 +49,7 @@ export function AppLayout({ children }: IProps): React.ReactElement {
             />
           </Sider>
           <Layout
-            className="h-screen"
+            className="h-screen max-md:!ml-[80px]"
             style={{
               marginLeft: collapsed ? 94 : 220,
               transition: "margin-left 0.3s"

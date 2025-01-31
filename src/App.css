@@ -38,3 +38,17 @@ body {
   border-color: rgba(255, 160, 0, 0.4);
   cursor: not-allowed;
 }
+
+@media screen and (max-width: 768px) {
+  .ant-layout-sider-trigger {
+    width: 80px !important;
+  }
+
+  .ant-menu-title-content {
+    opacity: 0 !important;
+  }
+
+  .ant-menu-item-icon {
+    font-size: 20px !important;
+  }
+}

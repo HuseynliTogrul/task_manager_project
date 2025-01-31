@@ -9,14 +9,16 @@ import {
 } from "recharts";
 import type { BlogResponse } from "../../types";
 import { commonInfoApi } from "../../services";
-import { message, Select } from "antd";
+import { Select } from "antd";
 import { Loading } from "../../components";
+import { useCommon } from "../../hooks";
+import { displayApiError } from "../../utils";
 
 type CustomDate = [number, number, number];
 
 export const Dashboard = (): React.ReactElement => {
   const [data, setData] = useState<{ day: string; count: number }[]>([]);
-  const [isloading, setIsLoading] = useState(true);
+  const { isloading } = useCommon();
   const [selectedRange, setSelectedRange] = useState(1);
 
   useEffect(() => {
@@ -26,13 +28,14 @@ export const Dashboard = (): React.ReactElement => {
 
         const today = new Date();
         const totalDays = selectedRange * 7;
-        const lastNDays = Array.from({ length: totalDays }, (_, i) => {
-          const day = new Date();
-          day.setDate(today.getDate() - i);
-          return day.toLocaleDateString();
+
+        const selectedDays = Array.from({ length: totalDays }, (_, i) => {
+          const date = new Date();
+          date.setDate(today.getDate() - i);
+          return date.toLocaleDateString();
         }).reverse();
 
-        const blogCounts: Record<string, number> = lastNDays.reduce(
+        const blogCounts: Record<string, number> = selectedDays.reduce(
           (acc, day) => {
             acc[day] = 0;
             return acc;
@@ -47,7 +50,25 @@ export const Dashboard = (): React.ReactElement => {
           }
         });
 
-        const chartData = Object.entries(blogCounts)
+        const combinedBlogCounts = Object.fromEntries(
+          Object.entries(blogCounts).reduce(
+            (
+              result: [string, number][],
+              element: [string, number],
+              i: number
+            ) => {
+              const currentIndex = i % 7;
+              result[currentIndex] = [
+                element[0],
+                (result[currentIndex]?.[1] ?? 0) + (element[1] || 0)
+              ];
+              return result;
+            },
+            []
+          )
+        );
+
+        const chartData = Object.entries(combinedBlogCounts)
           .map(([date, count]): [CustomDate, number] => [
             date.split(".").map((n) => +n) as CustomDate,
             count
@@ -62,15 +83,13 @@ export const Dashboard = (): React.ReactElement => {
             count
           }));
         setData(chartData);
-      } catch {
-        message.error("Failed to fetch data");
-      } finally {
-        setIsLoading(false);
+      } catch (e: unknown) {
+        displayApiError(e);
       }
     };
 
     fetchData();
-  }, []);
+  }, [selectedRange]);
 
   return (
     <div>

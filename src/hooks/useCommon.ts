@@ -6,6 +6,7 @@ import type { ChartEntry, RegisterResponse } from "../types";
 
 export const useCommon = () => {
   const [chartData, setChartData] = useState<ChartEntry[]>([]);
+  const [isloading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -17,10 +18,12 @@ export const useCommon = () => {
         setChartData(formattedData);
       } catch {
         message.error("Failed to fetch data");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchChartData();
   }, []);
 
-  return { chartData };
+  return { chartData, isloading };
 };
