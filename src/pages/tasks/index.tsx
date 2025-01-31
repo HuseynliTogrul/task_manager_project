@@ -5,25 +5,15 @@ import { Loading } from "../../components";
 import type { TaskEntry, TodoEntry } from "../../types";
 import axios from "axios";
 
-const fetchUsers = async (
-  setData: React.Dispatch<React.SetStateAction<TaskEntry[]>>
+const fetchData = async <T,>(
+  url: string,
+  setState: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
   try {
-    const res = await axios.get("https://dummyjson.com/users");
-    setData(res.data.users);
+    const res = await axios.get(url);
+    setState(res.data.users || res.data.todos);
   } catch {
-    message.error("Error fetching users");
-  }
-};
-
-const fetchTodos = async (
-  setTodos: React.Dispatch<React.SetStateAction<TodoEntry[]>>
-) => {
-  try {
-    const res = await axios.get("https://dummyjson.com/todos");
-    setTodos(res.data.todos);
-  } catch {
-    message.error("Error fetching todos");
+    message.error("Error fetching data");
   }
 };
 
@@ -33,21 +23,21 @@ export const Tasks = (): React.ReactElement => {
     pageSize: 9
   });
 
-  const [data, setData] = useState<TaskEntry[]>([]);
+  const [users, setUsers] = useState<TaskEntry[]>([]);
   const [todos, setTodos] = useState<TodoEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedRowKey, setExpandedRowKey] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchUsers(setData);
-    fetchTodos(setTodos);
+    fetchData<TaskEntry>("https://dummyjson.com/users", setUsers);
+    fetchData<TodoEntry>("https://dummyjson.com/todos", setTodos);
   }, []);
 
   useEffect(() => {
-    if (data.length > 0 && todos.length > 0) {
+    if (users.length > 0 && todos.length > 0) {
       setIsLoading(false);
     }
-  }, [data, todos]);
+  }, [users, todos]);
 
   const columns: ColumnsType<TaskEntry> = [
     {
@@ -100,7 +90,7 @@ export const Tasks = (): React.ReactElement => {
         <Loading />
       ) : (
         <Table<TaskEntry>
-          dataSource={data}
+          dataSource={users}
           style={{ padding: 0 }}
           rowKey="id"
           bordered
@@ -141,7 +131,7 @@ export const Tasks = (): React.ReactElement => {
             onExpand: (expanded, record) => {
               setExpandedRowKey(expanded ? record.id : null);
             }
-          }}
+          }} 
           onChange={(pagination) => {
             setTableParams({
               ...tableParams,
